@@ -42,4 +42,7 @@ jobs:
         env:  
           AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}} 
           AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_ACCESS_SECRET_KEY}} 
-       
+        run: |
+          aws s3 cp --recursive --region ap-northeast-1 .vuepress/docs s3://rest-test-env
+
+     
