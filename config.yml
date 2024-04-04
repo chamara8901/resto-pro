@@ -7,7 +7,7 @@ name: Deploy vuepress site to Pages
 on:
   # Runs on pushes targeting the default branch
   push:
-    branches: [main]
+    branches: [master]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -43,6 +43,6 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}} 
           AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_ACCESS_SECRET_KEY}} 
         run: |
-          aws s3 cp --recursive --region ap-northeast-1 /docs s3://rest-test-env
+          aws s3 cp --recursive --region ap-northeast-1 .vuepress/docs s3://rest-test-env
 
      
