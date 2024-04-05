@@ -1,46 +1,28 @@
-# Sample workflow for building and deploying a Next.js site to GitHub Pages
-#
-# To get started with Next.js see: https://nextjs.org/docs/getting-started
-#
-name: Deploy vuepress site to Pages
-
+name: deploy-test
 on:
-  # Runs on pushes targeting the default branch
-  push:
-    branches: [main]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# Allow one concurrent deployment
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, closed] #他のjobがある想定でこの設定にしている
 
 jobs:
-  # Build job
-  build:
+  UploadStaticFiles:
+    name: Upload static files
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Setup Node
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: "16"
-      - name: Install dependencies
-        run: npm ci
+      = run: npm ci
       - run: yarn build
-      - name: Release to S3
-        run: |
-          aws s3 cp --recursive --region ap-northeast-1 dist s3://rest-test-env
-        env: 
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }} 
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_SECRET_KEY }} 
-        
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_ACCESS_SECRET_KEY }}
+          aws-region: ap-northeast-1
+      - name: S3 sync
+        working-directory: static-files
+        run: aws s3 sync . s3://rest-test-env --delete --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --exclude "README.md"
+
+  
