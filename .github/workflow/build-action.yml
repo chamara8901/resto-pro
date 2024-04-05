@@ -22,7 +22,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_ACCESS_SECRET_KEY }}
           aws-region: ap-northeast-1
       - name: S3 sync
-        working-directory: static-files
-        run: aws s3 sync . s3://rest-test-env --delete --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --exclude "README.md"
+        working-directory: .
+        run: aws s3 sync dist s3://rest-test-env --delete --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --exclude "README.md"
 
   
