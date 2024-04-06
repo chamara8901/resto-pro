@@ -1,53 +1,17 @@
-# Sample workflow for building and deploying a Next.js site to GitHub Pages
-#
-# To get started with Next.js see: https://nextjs.org/docs/getting-started
-#
-name: Deploy vuepress site to Pages
-
 on:
-  # Runs on pushes targeting the default branch
   push:
-    branches: [main]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# Allow one concurrent deployment
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
-
-defaults:
-  run:
-    shell: bash
-    working-directory: ./resto-pro
+    branches:
+    - main
 
 jobs:
-  # Build job
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: "16"
-          cache: yarn 
-          cache-dependency-path: ./resto-pro/yarn.lock
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-      - run: yarn build
-      - name: Release to S3
-        env:  
-          AWS_S3_BUCKET : ${{secrets.AWS_S3_BUCKET}}
-          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}} 
-          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_ACCESS_SECRET_KEY}} 
-        run: |
-          aws s3 cp --recursive --region ap-northeast-1 dist s3://rest-test-env
+    - uses: actions/checkout@master
+    - uses: jakejarvis/s3-sync-action@master
+      with:
+        args: --acl public-read --follow-symlinks --delete --exclude '.git*/*'
+      env:
+        AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
