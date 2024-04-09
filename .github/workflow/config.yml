@@ -23,11 +23,6 @@ concurrency:
   group: "pages"
   cancel-in-progress: true
 
-defaults:
-  run:
-    shell: bash
-    working-directory: ./resto-pro
-
 jobs:
   # Build job
   build:
@@ -39,15 +34,24 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "16"
-          cache: yarn 
-          cache-dependency-path: ./resto-pro/yarn.lock
+          cache: npm
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
-      - run: yarn build
-      - name: Release to S3
-        env:  
-          AWS_S3_BUCKET : ${{secrets.AWS_S3_BUCKET}}
-          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}} 
-          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_ACCESS_SECRET_KEY}} 
-        run: |
-          aws s3 cp --recursive --region ap-northeast-1 dist s3://rest-test-env
+        run: npm ci
+      - name: Build with VuePress
+        run: npm run build
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: ./.vuepress/dist
+
+  # Deployment job
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
