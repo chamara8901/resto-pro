@@ -35,12 +35,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: "16"
-          cache: yarn 
-          cache-dependency-path: ./resto-pro/yarn.lock
+      - name: Cache dependencies
+      uses: actions/cache@v2
+      with:
+        path: ./resto-pro/node_modules
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       - run: yarn build
