@@ -42,7 +42,7 @@ jobs:
           cache: yarn 
           cache-dependency-path: ./resto-pro
       - name: Install dependencies
-        run: npm ci
+        run: yarn install --frozen-lockfile
       - run: yarn build
       - name: Release to S3
         env:  
