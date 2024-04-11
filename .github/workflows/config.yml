@@ -1,7 +1,3 @@
-# Sample workflow for building and deploying a Next.js site to GitHub Pages
-#
-# To get started with Next.js see: https://nextjs.org/docs/getting-started
-#
 name: Deploy vuepress site to Pages
 
 on:
@@ -23,11 +19,6 @@ concurrency:
   group: "pages"
   cancel-in-progress: true
 
-defaults:
-  run:
-    shell: bash
-    working-directory: ./resto-pro
-
 jobs:
   # Build job
   build:
@@ -39,10 +30,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "16"
-          cache: yarn 
-          cache-dependency-path: 
       - name: Install dependencies
-        run: yarn install 
+        run: npm ci
       - run: yarn build
       - name: Release to S3
         env:  
