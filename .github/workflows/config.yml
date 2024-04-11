@@ -42,7 +42,6 @@ jobs:
           cache: yarn 
           cache-dependency-path: 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
       - run: yarn build
       - name: Release to S3
         env:  
