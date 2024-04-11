@@ -42,6 +42,7 @@ jobs:
           cache: yarn 
           cache-dependency-path: 
       - name: Install dependencies
+        run: yarn install 
       - run: yarn build
       - name: Release to S3
         env:  
