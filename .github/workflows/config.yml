@@ -40,7 +40,7 @@ jobs:
         with:
           node-version: "16"
           cache: yarn 
-          cache-dependency-path: ./resto-pro
+          cache-dependency-path: 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       - run: yarn build
