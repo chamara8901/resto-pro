@@ -1,6 +1,6 @@
 <template>
   <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Megu`s Kitchen"/>
+  <HelloWorld msg="Janani's Graphics"/>
 </template>
 
 <script>
